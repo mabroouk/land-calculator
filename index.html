@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب المساحة في مصر</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            direction: rtl;
+            margin: 20px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .info {
+            margin-top: 30px;
+            text-align: right;
+        }
+        .footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: gray;
+            text-align: center;
+        }
+        .disclaimer {
+            font-size: 12px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>تطبيق حساب المساحة في مصر</h1>
+    <p>أدخل أطوال الجهات الأربع (بالسنتيمتر، المتر، أو القصبة):</p>
+    <input type="number" id="side1" placeholder="الجهة الأولى">
+    <select id="unit1">
+        <option value="meter">متر</option>
+        <option value="centimeter">سنتيمتر</option>
+        <option value="qasabah">قصبة</option>
+        <option value="half-qasabah">نصف قصبة</option>
+    </select>
+    <br>
+    <input type="number" id="side2" placeholder="الجهة الثانية">
+    <select id="unit2">
+        <option value="meter">متر</option>
+        <option value="centimeter">سنتيمتر</option>
+        <option value="qasabah">قصبة</option>
+        <option value="half-qasabah">نصف قصبة</option>
+    </select>
+    <br>
+    <input type="number" id="side3" placeholder="الجهة الثالثة">
+    <select id="unit3">
+        <option value="meter">متر</option>
+        <option value="centimeter">سنتيمتر</option>
+        <option value="qasabah">قصبة</option>
+        <option value="half-qasabah">نصف قصبة</option>
+    </select>
+    <br>
+    <input type="number" id="side4" placeholder="الجهة الرابعة">
+    <select id="unit4">
+        <option value="meter">متر</option>
+        <option value="centimeter">سنتيمتر</option>
+        <option value="qasabah">قصبة</option>
+        <option value="half-qasabah">نصف قصبة</option>
+    </select>
+    <br>
+    <button onclick="calculateArea()">احسب المساحة</button>
+    
+    <div class="result" id="result"></div>
+
+    <div class="info">
+        <h2>تعريف الوحدات:</h2>
+        <p>الفدان = 4200.83 متر مربع</p>
+        <p>القيراط = 175.03 متر مربع</p>
+        <p>القصبة = 3.55 متر</p>
+        <p>نصف القصبة = 1.775 متر</p>
+        <p>السهم = 7.29 متر مربع</p>
+        <p>1 متر مربع = 10.7639 قدم مربع</p>
+    </div>
+
+    <div class="footer">
+        <p class="disclaimer">
+            التحذير: هذا التطبيق يهدف إلى حساب المساحات بشكل تقريبي فقط بناءً على القيم المدخلة. النتائج قد تختلف عن القياسات الدقيقة. يُرجى الرجوع إلى مساح معتمد لتثبيت المساحات الموثقة. 
+            <br> Disclaimer: This tool provides approximate calculations only and is not a substitute for certified land surveyors. Please consult a professional for accurate measurements.
+        </p>
+        <p>حقوق النشر محفوظة © 2024. إعداد وتصميم: محاسب أحمد مبروك.</p>
+    </div>
+
+    <script>
+        function convertToMeters(value, unit) {
+            if (unit === "centimeter") return value / 100;
+            if (unit === "qasabah") return value * 3.55;
+            if (unit === "half-qasabah") return value * 1.775;
+            return value; // إذا كان بالمتر
+        }
+
+        function calculateArea() {
+            const side1 = convertToMeters(parseFloat(document.getElementById("side1").value) || 0, document.getElementById("unit1").value);
+            const side2 = convertToMeters(parseFloat(document.getElementById("side2").value) || 0, document.getElementById("unit2").value);
+            const side3 = convertToMeters(parseFloat(document.getElementById("side3").value) || 0, document.getElementById("unit3").value);
+            const side4 = convertToMeters(parseFloat(document.getElementById("side4").value) || 0, document.getElementById("unit4").value);
+
+            // حساب المتوسط للأطوال
+            const averageLength = (side1 + side2 + side3 + side4) / 4;
+
+            // حساب المساحة بالمتر المربع
+            const areaInMeters = averageLength * averageLength;
+
+            // تحويل المساحة إلى الوحدات الأخرى
+            const areaInFeet = areaInMeters * 10.7639;
+            const areaInFeddans = Math.floor(areaInMeters / 4200.83);
+            const remainingMeters = areaInMeters % 4200.83;
+            const areaInQirats = Math.floor(remainingMeters / 175.03);
+            const remainingAfterQirats = remainingMeters % 175.03;
+            const areaInSahms = (remainingAfterQirats / 7.29).toFixed(2);
+
+            // عرض النتائج
+            document.getElementById("result").innerHTML = `
+                <p>المساحة بالمتر المربع: ${areaInMeters.toFixed(2)} م²</p>
+                <p>المساحة بالقدم المربع: ${areaInFeet.toFixed(2)} قدم²</p>
+                <p>المساحة بالتفصيل: ${areaInFeddans} فدان و${areaInQirats} قيراط و${areaInSahms} سهم</p>
+                <p>المساحة بالفدان فقط: ${(areaInMeters / 4200.83).toFixed(2)} فدان</p>
+                <p>المساحة بالقيراط فقط: ${(areaInMeters / 175.03).toFixed(2)} قيراط</p>
+                <p>المساحة بالقصبة فقط: ${(areaInMeters / (3.55 * 3.55)).toFixed(2)} قصبة</p>
+                <p>المساحة بالسهم فقط: ${(areaInMeters / 7.29).toFixed(2)} سهم</p>
+            `;
+        }
+    </script>
+</body>
+</html>
